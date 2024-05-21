@@ -1,0 +1,30 @@
+﻿namespace GD.Enums
+{
+    public enum UIPanelTypes
+    {
+        None,
+        Menu,
+        Pause,
+        Quit,
+        Settings,
+        Shop,
+        Inventory,
+        Capture,
+        Game,
+        GameOver,
+        LevelComplete,
+        LevelFailed,
+        Loading,
+        Tutorial,
+        Credits,
+        Leaderboard,
+        Achievements,
+        DailyRewards,
+        RateUs,
+        PrivacyPolicy,
+        TermsOfService,
+        Profile,
+        Notifications,
+        Friends,
+    }
+}
