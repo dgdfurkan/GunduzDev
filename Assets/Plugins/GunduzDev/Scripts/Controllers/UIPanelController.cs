@@ -67,9 +67,14 @@ namespace GD.Controllers
             UnsubscribeEvents();
         }
 
+        private void Awake()
+        {
+            // TODO: layers list should create here.
+        }
+
         private void Start()
         {
-            OnOpenPanel(UISignal.OnGetUIPanelData(UIPanelTypes.Menu));
+            OnOpenPanel(UISignal.OnGetData(UIPanelTypes.Menu));
         }
 
         #region Signal Methods
@@ -81,11 +86,16 @@ namespace GD.Controllers
         
         private void OnOpenPanel(UIPanelData data)
         {
-            Debug.Log("OnOpenPanel: " + data.panelType);
+            Debug.Log("OnOpenPanel: " + data.type);
             // TODO: Later, a data.layer control can be added here.
 
             
-            if (GetTheTopPanelData().panelType == data.panelType)
+            if(data.type == UIPanelTypes.None)
+            {
+                return;
+            }
+            
+            if (GetTheTopPanelData().type == data.type)
             {
                 if (data.panelLayer != 0)
                 {
@@ -96,7 +106,7 @@ namespace GD.Controllers
             }
             
             // TODO: If user forgets to add Menu panel to openablePanels, this part should be updated. Otherwise, it will be a problem.
-            if (!GetTheTopPanelData().openablePanels.Contains(data.panelType) && GetTheTopPanelData().panelType != data.panelType)
+            if (!GetTheTopPanelData().openablePanels.Contains(data.type) && GetTheTopPanelData().type != data.type)
             {
                 if (data.panelLayer != 0)
                 {
@@ -106,7 +116,7 @@ namespace GD.Controllers
             }
             
             // TODO: If user wants to edit Menu panel to IsDisableable, this part should be updated. Otherwise, it will be a problem.
-            if (GetTheTopPanelData().isDisableable && !GetTheTopPanelData().exceptionPanelsForOpenable.Contains(data.panelType))
+            if (GetTheTopPanelData().isDisableable && !GetTheTopPanelData().exceptionPanelsForOpenable.Contains(data.type))
             {
                 layers[GetTheTopPanelData().panelLayer].transform.GetChild(0).gameObject.SetActive(false);
             }
@@ -116,7 +126,7 @@ namespace GD.Controllers
         
         private void OnClosePanelByType(UIPanelData data)
         {
-            Debug.Log("OnClosePanelByType: " + data.panelType);
+            Debug.Log("OnClosePanelByType: " + data.type);
         }
         
         private void OnClosePanelByLayer(short layer)
@@ -175,7 +185,7 @@ namespace GD.Controllers
             }
             else
             {
-                OnOpenPanel(UISignal.OnGetUIPanelData(GetTheTopPanelData().escapePanel));
+                OnOpenPanel(UISignal.OnGetData(GetTheTopPanelData().escapePanel));
             }
         }
 
@@ -190,11 +200,11 @@ namespace GD.Controllers
                     // TODO: Getting panel name from panel object name is not a good idea. It should be stored in a variable or something.
                     string panelName = layers[i].transform.GetChild(0).name.Replace("Panel(Clone)", "").Trim();
                     print($"Lower panel: {panelName}");
-                    return UISignal.OnGetUIPanelData((UIPanelTypes)Enum.Parse(typeof(UIPanelTypes), panelName));
+                    return UISignal.OnGetData((UIPanelTypes)Enum.Parse(typeof(UIPanelTypes), panelName));
                 }
             }
-            print($"No lower panel. {UISignal.OnGetUIPanelData(UIPanelTypes.Menu).panelName}");
-            return UISignal.OnGetUIPanelData(UIPanelTypes.Menu);
+            print($"No lower panel. {UISignal.OnGetData(UIPanelTypes.Menu).panelName}");
+            return UISignal.OnGetData(UIPanelTypes.Menu);
         }
         
         private UIPanelData GetTheTopPanelData()
@@ -206,11 +216,11 @@ namespace GD.Controllers
                     // TODO: Getting panel name from panel object name is not a good idea. It should be stored in a variable or something.
                     string panelName = layers[i].transform.GetChild(0).name.Replace("Panel(Clone)", "").Trim();
                     print($"The top panel: {panelName}");
-                    return UISignal.OnGetUIPanelData((UIPanelTypes)Enum.Parse(typeof(UIPanelTypes), panelName));
+                    return UISignal.OnGetData((UIPanelTypes)Enum.Parse(typeof(UIPanelTypes), panelName));
                 }
             }
-            print($"No the top panel: {UISignal.OnGetUIPanelData(UIPanelTypes.Menu).panelName}");
-            return UISignal.OnGetUIPanelData(UIPanelTypes.Menu);
+            print($"No the top panel: {UISignal.OnGetData(UIPanelTypes.Menu).panelName}");
+            return UISignal.OnGetData(UIPanelTypes.Menu);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace GD.Managers
 
         private PlayerInput _playerInput;
         private const string PathOfData = "GunduzDev/Datas/UIPanelDatas";
-        private List<UIPanelData> _uiPanelDatas = new List<UIPanelData>();
+        private List<UIPanelData> _datas = new List<UIPanelData>();
         
         #endregion
 
@@ -45,14 +45,14 @@ namespace GD.Managers
         private void SubscribeEvents()
         {
             _playerInput.onActionTriggered += OnActionTriggered;
-            UISignal.OnGetUIPanelData += OnGetUIPanelData;
+            UISignal.OnGetData += OnGetData;
             UISignal.OnUIEventSubscription += OnUIEventSubscription;
         }
 
         private void UnsubscribeEvents()
         {
             _playerInput.onActionTriggered -= OnActionTriggered;
-            UISignal.OnGetUIPanelData -= OnGetUIPanelData;
+            UISignal.OnGetData -= OnGetData;
             UISignal.OnUIEventSubscription -= OnUIEventSubscription;
         }
 
@@ -69,7 +69,7 @@ namespace GD.Managers
         void GetReferences()
         {
             _playerInput = GetComponent<PlayerInput>();
-            _uiPanelDatas = GetUIPanelDatas();
+            _datas = GetDatas();
         }
         
         private void OnActionTriggered(InputAction.CallbackContext context)
@@ -101,35 +101,35 @@ namespace GD.Managers
                         OnSettings();
                         break;
                     case ActionNames.Escape:
-                        OnEscapeKeyPressed();
+                        OnClose();
                         break;
                 }
             }
         }
 
-        private List<UIPanelData> GetUIPanelDatas()
+        private List<UIPanelData> GetDatas()
         {
-            return _uiPanelDatas = new List<UIPanelData>(Resources.LoadAll<CD_UIPanel>(PathOfData)
+            return _datas = new List<UIPanelData>(Resources.LoadAll<CD_UIPanel>(PathOfData)
                 .Select(item => item.Data)
                 .ToList());
         }
         
-        private UIPanelData OnGetUIPanelData(UIPanelTypes type)
+        private UIPanelData OnGetData(UIPanelTypes type)
         {
-            return _uiPanelDatas.Find(x => x.panelType == type);
+            return _datas.Find(x => x.type == type);
         }
 
-        void GetMyUIPanelDatas()
+        void GetMyDatas()
         {
-            foreach (var uiPanel in _uiPanelDatas)
+            foreach (var data in _datas)
             {
-                Debug.Log(uiPanel.panelName + " is a panel." + 
-                          "\n" + "Prefab: " + uiPanel.panelPrefab + 
-                          "\n" + "Type: " + uiPanel.panelType + 
-                          "\n" + "Layer: " + uiPanel.panelLayer + 
-                          "\n" + "EscapePanel: " + uiPanel.escapePanel + 
-                          "\n" + "OpenablePanels: " + uiPanel.openablePanels + 
-                          "\n" + "Disableable: " + uiPanel.isDisableable);
+                Debug.Log(data.panelName + " is a panel." + 
+                          "\n" + "Prefab: " + data.panelPrefab + 
+                          "\n" + "Type: " + data.type + 
+                          "\n" + "Layer: " + data.panelLayer + 
+                          "\n" + "EscapePanel: " + data.escapePanel + 
+                          "\n" + "OpenablePanels: " + data.openablePanels + 
+                          "\n" + "Disableable: " + data.isDisableable);
             }
         }
 
@@ -142,95 +142,94 @@ namespace GD.Managers
                 case UIEventSubscriptionTypes.OnDefault:
                     OnDefault();
                     break;
-                case UIEventSubscriptionTypes.OnStart:
-                    OnStart();
-                    break;
                 case UIEventSubscriptionTypes.OnMenu:
                     OnMenu();
                     break;
-                case UIEventSubscriptionTypes.OnConfirm:
-                    OnConfirm();
-                    break;
-                case UIEventSubscriptionTypes.OnInventory:
-                    OnInventory();
-                    break;
-                case UIEventSubscriptionTypes.OnShop:
-                    OnShop();
-                    break;
-                case UIEventSubscriptionTypes.OnCapture:
-                    OnCapture();
-                    break;
-                case UIEventSubscriptionTypes.OnPause:
-                    OnPause();
-                    break;
-                case UIEventSubscriptionTypes.OnSettings:
-                    OnSettings();
+                case UIEventSubscriptionTypes.OnStart:
+                    OnStart();
                     break;
                 case UIEventSubscriptionTypes.OnClose:
-                    OnEscapeKeyPressed();
+                    OnClose();
                     break;
                 case UIEventSubscriptionTypes.OnQuit:
                     OnQuit();
                     break;
-            
+                case UIEventSubscriptionTypes.OnSettings:
+                    OnSettings();
+                    break;
+                case UIEventSubscriptionTypes.OnConfirm:
+                    OnConfirm();
+                    break;
+                case UIEventSubscriptionTypes.OnPause:
+                    OnPause();
+                    break;
+                case UIEventSubscriptionTypes.OnShop:
+                    OnShop();
+                    break;
+                case UIEventSubscriptionTypes.OnInventory:
+                    OnInventory();
+                    break;
+                case UIEventSubscriptionTypes.OnCapture:
+                    OnCapture();
+                    break;
             }
         }
         
-        public void OnDefault()
+        void OnDefault()
         {
             
         }
         
-        public void OnStart()
+        void OnMenu()
         {
             UISignal.OnCloseAllPanels?.Invoke();
-            UISignal.OnOpenPanel(OnGetUIPanelData(UIPanelTypes.Game));
+            UISignal.OnOpenPanel(OnGetData(UIPanelTypes.Menu));
         }
         
-        public void OnMenu()
+        void OnStart()
         {
             UISignal.OnCloseAllPanels?.Invoke();
-            UISignal.OnOpenPanel(OnGetUIPanelData(UIPanelTypes.Menu));
-        }
-
-        public void OnConfirm()
-        {
-            
+            UISignal.OnOpenPanel(OnGetData(UIPanelTypes.Game));
         }
         
-        public void OnInventory()
-        {
-            UISignal.OnOpenPanel(OnGetUIPanelData(UIPanelTypes.Inventory));
-        }
-
-        public void OnShop()
-        {
-            UISignal.OnOpenPanel(OnGetUIPanelData(UIPanelTypes.Shop));
-        }
-        
-        public void OnCapture()
-        {
-            UISignal.OnOpenPanel(OnGetUIPanelData(UIPanelTypes.Capture));
-        }
-        
-        public void OnPause()
-        {
-            UISignal.OnOpenPanel(OnGetUIPanelData(UIPanelTypes.Pause));
-        }
-
-        public void OnSettings()
-        {
-            UISignal.OnOpenPanel(OnGetUIPanelData(UIPanelTypes.Settings));
-        }
-        
-        public void OnQuit()
-        {
-            UISignal.OnOpenPanel(OnGetUIPanelData(UIPanelTypes.Quit));
-        }
-        
-        public void OnEscapeKeyPressed()
+        void OnClose()
         {
             UISignal.OnEscapeKeyPressed?.Invoke();
+        }
+        
+        void OnQuit()
+        {
+            UISignal.OnOpenPanel(OnGetData(UIPanelTypes.Quit));
+        }
+        
+        void OnSettings()
+        {
+            UISignal.OnOpenPanel(OnGetData(UIPanelTypes.Settings));
+        }
+        
+        void OnConfirm()
+        {
+            
+        }
+        
+        void OnPause()
+        {
+            UISignal.OnOpenPanel(OnGetData(UIPanelTypes.Pause));
+        }
+
+        void OnInventory()
+        {
+            UISignal.OnOpenPanel(OnGetData(UIPanelTypes.Inventory));
+        }
+
+        void OnShop()
+        {
+            UISignal.OnOpenPanel(OnGetData(UIPanelTypes.Shop));
+        }
+        
+        void OnCapture()
+        {
+            UISignal.OnOpenPanel(OnGetData(UIPanelTypes.Capture));
         }
 
         #endregion

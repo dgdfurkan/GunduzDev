@@ -1,7 +1,6 @@
 ﻿using System;
 using GD.Datas.ValueObjects;
 using GD.Enums;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace GD.Signals
@@ -21,6 +20,6 @@ namespace GD.Signals
         public static UnityAction OnEscapeKeyPressed = delegate {  };
         public static UnityAction<UIEventSubscriptionTypes> OnUIEventSubscription = delegate {  };
         
-        public static Func<UIPanelTypes, UIPanelData> OnGetUIPanelData;
+        public static Func<UIPanelTypes, UIPanelData> OnGetData;
     }
 }

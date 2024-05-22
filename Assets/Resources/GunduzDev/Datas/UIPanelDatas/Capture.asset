@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Data:
     panelName: 
-    panelType: 7
+    type: 7
     panelPrefab: {fileID: 7950464543197403293, guid: 3d4942844f8ef3f4681360e9ae1435e5, type: 3}
     isDisableable: 0
     panelLayer: 1
     openablePanels: 
+    exceptionPanelsForOpenable: 
+    panelOpeningEase: 0
+    panelClosingEase: 0
     escapePanel: 0
